@@ -7,9 +7,6 @@ public class Calculator {
     private final StringBuilder expression = new StringBuilder();
     private boolean lastWasResult = false;
 
-    /**
-     * Обрабатывает ввод цифры или точки
-     */
     public String handleDigitInput(String input) {
         if (lastWasResult) {
             clear();
@@ -24,9 +21,6 @@ public class Calculator {
         return expression.toString();
     }
 
-    /**
-     * Обрабатывает ввод оператора
-     */
     public String handleOperatorInput(String operator) {
         lastWasResult = false;
 
@@ -38,7 +32,7 @@ public class Calculator {
         }
 
         char lastChar = expression.charAt(expression.length() - 1);
-        if (isOperatorOrDot(lastChar)) {
+        if (isDot(lastChar) || isOperator(lastChar)) {
             expression.deleteCharAt(expression.length() - 1);
         }
 
@@ -58,9 +52,6 @@ public class Calculator {
         return expression.toString();
     }
 
-    /**
-     * Вычисляет результат выражения
-     */
     public String calculateResult() {
         if (lastWasResult || expression.isEmpty()) {
             return expression.toString();
@@ -87,13 +78,10 @@ public class Calculator {
             return formatted;
         } catch (Exception e) {
             clear();
-            return "Ошибка";
+            return "Undefined";
         }
     }
 
-    /**
-     * Очищает выражение
-     */
     public void clear() {
         expression.setLength(0);
         lastWasResult = false;
@@ -121,7 +109,7 @@ public class Calculator {
             if (isOperator(c)) {
                 return false;
             }
-            if (c == '.') {
+            if (isDot(c)) {
                 return true;
             }
         }
@@ -132,8 +120,8 @@ public class Calculator {
         return c == '+' || c == '-' || c == '*' || c == '/';
     }
 
-    private boolean isOperatorOrDot(char c) {
-        return isOperator(c) || c == '.';
+    private boolean isDot(char c) {
+        return c == '.';
     }
 }
 

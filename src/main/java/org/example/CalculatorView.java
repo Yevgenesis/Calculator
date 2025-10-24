@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Графический интерфейс калькулятора
+ * GUI Calculators
  */
 public class CalculatorView {
     private static final Color DARK_BG = new Color(44, 44, 46);
@@ -108,7 +108,7 @@ public class CalculatorView {
     private void handleButtonClick(String cmd) {
         String result;
 
-        // Преобразуем символы iOS в стандартные операторы
+        // Преобразуем символы в стандартные операторы
         String normalizedCmd = cmd;
         if ("÷".equals(cmd)) normalizedCmd = "/";
         if ("×".equals(cmd)) normalizedCmd = "*";
@@ -118,10 +118,10 @@ public class CalculatorView {
             calculator.clear();
             result = "0";
         } else if ("+/-".equals(cmd)) {
-            // Смена знака (можно реализовать позже)
+            // todo
             return;
         } else if ("%".equals(cmd)) {
-            // Процент (можно реализовать позже)
+            // todo
             return;
         } else if (normalizedCmd.matches("[0-9.]")) {
             result = calculator.handleDigitInput(normalizedCmd);
