@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * GUI Calculators
+ * Графический интерфейс калькулятора
  */
 public class CalculatorView {
     private static final Color DARK_BG = new Color(44, 44, 46);
@@ -21,7 +21,7 @@ public class CalculatorView {
 
         JFrame frame = new JFrame("Calculator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(325, 485);
+        frame.setSize(320, 480);
         frame.setLayout(new BorderLayout());
         frame.getContentPane().setBackground(DARK_BG);
 
@@ -44,6 +44,30 @@ public class CalculatorView {
         return field;
     }
 
+    private void updateDisplayWithAdaptiveFont(String text) {
+        display.setText(text.isEmpty() ? "0" : text);
+
+        // Адаптивный размер шрифта в зависимости от длины текста
+        int fontSize;
+        int length = display.getText().length();
+
+        if (length <= 9) {
+            fontSize = 48;
+        } else if (length <= 13) {
+            fontSize = 33;
+        } else if (length <= 17) {
+            fontSize = 25;
+        } else if (length <= 21) {
+            fontSize = 20;
+        } else if (length <= 30) {
+            fontSize = 15;
+        } else {
+            fontSize = 10;
+        }
+
+        display.setFont(new Font("SF Pro Display", Font.PLAIN, fontSize));
+    }
+
     private JPanel createButtonPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(DARK_BG);
@@ -56,8 +80,8 @@ public class CalculatorView {
         gbc.weighty = 1;
 
         // Row 1
-        addButton(panel, "<", 0, 0, 1, BUTTON_LIGHT_GRAY, Color.BLACK, gbc);
-        addButton(panel, "C", 1, 0, 1, BUTTON_LIGHT_GRAY, Color.BLACK, gbc);
+        addButton(panel, "C", 0, 0, 1, BUTTON_LIGHT_GRAY, Color.BLACK, gbc);
+        addButton(panel, "±", 1, 0, 1, BUTTON_LIGHT_GRAY, Color.BLACK, gbc);
         addButton(panel, "%", 2, 0, 1, BUTTON_LIGHT_GRAY, Color.BLACK, gbc);
         addButton(panel, "÷", 3, 0, 1, BUTTON_ORANGE, TEXT_WHITE, gbc);
 
@@ -90,7 +114,7 @@ public class CalculatorView {
     private void addButton(JPanel panel, String label, int x, int y, int width,
                            Color bg, Color fg, GridBagConstraints gbc) {
         JButton button = new JButton(label);
-        button.setFont(new Font("SF Pro Display", Font.PLAIN, 28));
+        button.setFont(new Font("SF Pro Display", Font.PLAIN, 23));
         button.setBackground(bg);
         button.setForeground(fg);
         button.setFocusPainted(false);
@@ -117,24 +141,22 @@ public class CalculatorView {
         if ("C".equals(cmd)) {
             calculator.clear();
             result = "0";
-        } else if ("+/-".equals(cmd)) {
-            // todo
+        } else if ("±".equals(cmd)) {
+            // TODO: реализовать смену знака
             return;
         } else if ("%".equals(cmd)) {
-            // todo
+            // TODO: реализовать процент
             return;
         } else if (normalizedCmd.matches("[0-9.]")) {
             result = calculator.handleDigitInput(normalizedCmd);
         } else if (normalizedCmd.matches("[+\\-*/]")) {
             result = calculator.handleOperatorInput(normalizedCmd);
-        } else if (normalizedCmd.matches("<")) {
-            result = calculator.handleOperatorBackspace();
         } else if ("=".equals(cmd)) {
             result = calculator.calculateResult();
         } else {
             return;
         }
 
-        display.setText(result.isEmpty() ? "0" : result);
+        updateDisplayWithAdaptiveFont(result);
     }
 }

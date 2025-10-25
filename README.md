@@ -1,4 +1,4 @@
-# 🧮 Java Calculator
+#  Java Calculator
 
 A simple desktop calculator with GUI built using Java Swing.
 
