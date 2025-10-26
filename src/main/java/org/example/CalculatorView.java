@@ -108,8 +108,8 @@ public class CalculatorView {
         gbc.weighty = 1;
 
         // Row 1: Clear, Plus/Minus, Percent, Division
-        addButton(panel, "C", 0, 0, 1, BUTTON_LIGHT_GRAY, Color.BLACK, gbc);
-        addButton(panel, "±", 1, 0, 1, BUTTON_LIGHT_GRAY, Color.BLACK, gbc);
+        addButton(panel, "$", 0, 0, 1, BUTTON_LIGHT_GRAY, Color.BLACK, gbc);
+        addButton(panel, "C", 1, 0, 1, BUTTON_LIGHT_GRAY, Color.BLACK, gbc);
         addButton(panel, "%", 2, 0, 1, BUTTON_LIGHT_GRAY, Color.BLACK, gbc);
         addButton(panel, "÷", 3, 0, 1, BUTTON_ORANGE, TEXT_WHITE, gbc);
 
@@ -153,22 +153,64 @@ public class CalculatorView {
      */
     private void addButton(JPanel panel, String label, int x, int y, int width,
                            Color bg, Color fg, GridBagConstraints gbc) {
-        JButton button = new JButton(label);
-        button.setFont(new Font("SF Pro Display", Font.PLAIN, 23));
-        button.setBackground(bg);
+        JButton button = new JButton(label) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                try {
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                    // Цвет заливки в зависимости от состояния (без теней имён)
+                    Color fillColor;
+                    if (!isEnabled()) {
+                        fillColor = bg.darker().darker();
+                    } else if (getModel().isPressed()) {
+                        fillColor = bg.darker();
+                    } else if (getModel().isRollover()) {
+                        fillColor = bg.brighter();
+                    } else {
+                        fillColor = bg;
+                    }
+
+                    // Рисуем закруглённый фон
+                    int arc = 12;
+                    g2.setColor(fillColor);
+                    g2.fillRoundRect(0, 0, getWidth(), getHeight(), arc, arc);
+
+                    // Если нужен контур — можно его нарисовать:
+                    // g2.setColor(fillColor.darker());
+                    // g2.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, arc, arc);
+                } finally {
+                    g2.dispose();
+                }
+
+                // Рисуем текст и прочее (super не будет заливать фон, так как setOpaque(false))
+                super.paintComponent(g);
+            }
+        };
+
+        // Важно: отключаем стандартную заливку фона, чтобы супер не затирал закруглённый фон
+        button.setContentAreaFilled(false);
+        button.setOpaque(false);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+
+        // Отступы, чтобы текст не прилегал к краям
+        button.setMargin(new Insets(6, 12, 6, 12));
+        button.setBorder(BorderFactory.createEmptyBorder(4, 10, 4, 10));
+
+        button.setFont(new Font("SF Pro Display", Font.PLAIN, 23)); // если шрифт не найден — будет fallback
+        button.setBackground(bg); // используется в paintComponent
         button.setForeground(fg);
-        button.setFocusPainted(false); // Remove focus border
-        button.setBorderPainted(false); // Remove button border
-        button.setOpaque(true);
         button.addActionListener(e -> handleButtonClick(label));
 
-        // Set button position and size
+        // Позиционирование в GridBag
         gbc.gridx = x;
         gbc.gridy = y;
         gbc.gridwidth = width;
-
         panel.add(button, gbc);
     }
+
 
     /**
      * Handles button click events and updates display.
