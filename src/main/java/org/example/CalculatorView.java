@@ -30,6 +30,8 @@ public class CalculatorView {
 
         JPanel displayPanel = new JPanel(new BorderLayout());
         displayPanel.setBackground(DARK_BG);
+        displayPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
+        displayPanel.setPreferredSize(new Dimension(WIDTH, 120)); // Фиксированная высота дисплея
         displayPanel.add(expressionLabel, BorderLayout.NORTH);
         displayPanel.add(display, BorderLayout.CENTER);
 
@@ -57,7 +59,7 @@ public class CalculatorView {
         f.setFont(new Font("SF Pro Display", Font.PLAIN, 48));
         f.setBackground(DARK_BG);
         f.setForeground(Color.WHITE);
-//        f.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
+        f.setBorder(null);
         return f;
     }
 
@@ -66,7 +68,7 @@ public class CalculatorView {
         label.setHorizontalAlignment(JLabel.RIGHT);
         label.setFont(new Font("SF Pro Display", Font.PLAIN, 16));
         label.setForeground(new Color(150, 150, 150));
-        label.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 20));
+        label.setBorder(null);
         return label;
     }
 
@@ -76,7 +78,7 @@ public class CalculatorView {
 
         // Adaptive font size
         int len = formatted.length();
-        int size = len <= 9 ? 48 : len <= 13 ? 33 : len <= 17 ? 25 : len <= 21 ? 20 : len <= 30 ? 15 : 10;
+        int size = len <= 10 ? 48 : len <= 14 ? 33 : len <= 20 ? 25 : len <= 24 ? 20 : len <= 34 ? 15 : 10;
         display.setFont(new Font("SF Pro Display", Font.PLAIN, size));
     }
 
@@ -101,7 +103,6 @@ public class CalculatorView {
         if (c == 'c' || c == 'C' || code == KeyEvent.VK_ESCAPE) return "C";
         if (code == KeyEvent.VK_BACK_SPACE) return "⌫";
         if (c == '%') return "%";
-        if (c == 'n' || c == 'N') return "±"; // 'n' for negate
 
         return null;
     }
@@ -109,7 +110,7 @@ public class CalculatorView {
     private JPanel createButtons() {
         JPanel p = new JPanel(new GridBagLayout());
         p.setBackground(DARK_BG);
-        p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        p.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 
         GridBagConstraints g = new GridBagConstraints();
         g.fill = GridBagConstraints.BOTH;
@@ -117,39 +118,39 @@ public class CalculatorView {
         g.weightx = g.weighty = 1;
 
         // Row 1
-        btn(p, "C", 0, 0, 1, BTN_LIGHT, Color.BLACK, g);
-        btn(p, "±", 1, 0, 1, BTN_LIGHT, Color.BLACK, g);
-        btn(p, "%", 2, 0, 1, BTN_LIGHT, Color.BLACK, g);
-        btn(p, "÷", 3, 0, 1, BTN_ORANGE, Color.WHITE, g);
+        btn(p, "⌫", 0, 0, 1, BTN_LIGHT, Color.BLACK, 17, g);
+        btn(p, "C", 1, 0, 1, BTN_LIGHT, Color.BLACK, 23, g);
+        btn(p, "%", 2, 0, 1, BTN_LIGHT, Color.BLACK, 23, g);
+        btn(p, "÷", 3, 0, 1, BTN_ORANGE, Color.WHITE, 27, g);
 
         // Row 2
-        btn(p, "7", 0, 1, 1, BTN_GRAY, Color.WHITE, g);
-        btn(p, "8", 1, 1, 1, BTN_GRAY, Color.WHITE, g);
-        btn(p, "9", 2, 1, 1, BTN_GRAY, Color.WHITE, g);
-        btn(p, "×", 3, 1, 1, BTN_ORANGE, Color.WHITE, g);
+        btn(p, "7", 0, 1, 1, BTN_GRAY, Color.WHITE, 23, g);
+        btn(p, "8", 1, 1, 1, BTN_GRAY, Color.WHITE, 23, g);
+        btn(p, "9", 2, 1, 1, BTN_GRAY, Color.WHITE, 23, g);
+        btn(p, "×", 3, 1, 1, BTN_ORANGE, Color.WHITE, 27, g);
 
         // Row 3
-        btn(p, "4", 0, 2, 1, BTN_GRAY, Color.WHITE, g);
-        btn(p, "5", 1, 2, 1, BTN_GRAY, Color.WHITE, g);
-        btn(p, "6", 2, 2, 1, BTN_GRAY, Color.WHITE, g);
-        btn(p, "−", 3, 2, 1, BTN_ORANGE, Color.WHITE, g);
+        btn(p, "4", 0, 2, 1, BTN_GRAY, Color.WHITE, 23, g);
+        btn(p, "5", 1, 2, 1, BTN_GRAY, Color.WHITE, 23, g);
+        btn(p, "6", 2, 2, 1, BTN_GRAY, Color.WHITE, 23, g);
+        btn(p, "−", 3, 2, 1, BTN_ORANGE, Color.WHITE, 27, g);
 
         // Row 4
-        btn(p, "1", 0, 3, 1, BTN_GRAY, Color.WHITE, g);
-        btn(p, "2", 1, 3, 1, BTN_GRAY, Color.WHITE, g);
-        btn(p, "3", 2, 3, 1, BTN_GRAY, Color.WHITE, g);
-        btn(p, "+", 3, 3, 1, BTN_ORANGE, Color.WHITE, g);
+        btn(p, "1", 0, 3, 1, BTN_GRAY, Color.WHITE, 23, g);
+        btn(p, "2", 1, 3, 1, BTN_GRAY, Color.WHITE, 23, g);
+        btn(p, "3", 2, 3, 1, BTN_GRAY, Color.WHITE, 23, g);
+        btn(p, "+", 3, 3, 1, BTN_ORANGE, Color.WHITE, 27, g);
 
         // Row 5
-        btn(p, "0", 0, 4, 2, BTN_GRAY, Color.WHITE, g);
-        btn(p, ".", 2, 4, 1, BTN_GRAY, Color.WHITE, g);
-        btn(p, "=", 3, 4, 1, BTN_ORANGE, Color.WHITE, g);
+        btn(p, "0", 0, 4, 2, BTN_GRAY, Color.WHITE, 23, g);
+        btn(p, ".", 2, 4, 1, BTN_GRAY, Color.WHITE, 23, g);
+        btn(p, "=", 3, 4, 1, BTN_ORANGE, Color.WHITE, 27, g);
 
         return p;
     }
 
-    private void btn(JPanel p, String label, int x, int y, int w, Color bg, Color fg, GridBagConstraints g) {
-        JButton b = new RoundedButton(label, bg, fg);
+    private void btn(JPanel p, String label, int x, int y, int w, Color bg, Color fg, int fontSize, GridBagConstraints g) {
+        JButton b = new RoundedButton(label, bg, fg, fontSize);
         b.addActionListener(e -> handleInput(label));
         g.gridx = x;
         g.gridy = y;
@@ -172,8 +173,6 @@ public class CalculatorView {
             expressionLabel.setText(" ");
         } else if ("⌫".equals(cmd)) {
             result = calculator.backspace();
-        } else if ("±".equals(cmd)) {
-            result = calculator.negate();
         } else if ("%".equals(cmd)) {
             result = calculator.percentage();
         } else if (cmd.matches("[0-9.]")) {
@@ -191,7 +190,7 @@ public class CalculatorView {
                         .replace("*", "×")
                         .replace("/", "÷")
                         .replace("-", "−");
-                expressionLabel.setText(displayExpr);
+                expressionLabel.setText(displayExpr + "=" + result);
             }
         } else {
             return;
@@ -206,13 +205,13 @@ public class CalculatorView {
     private static class RoundedButton extends JButton {
         private final Color bg;
 
-        RoundedButton(String text, Color bg, Color fg) {
+        RoundedButton(String text, Color bg, Color fg, int fontSize) {
             super(text);
             this.bg = bg;
             setContentAreaFilled(false);
             setFocusPainted(false);
             setBorderPainted(false);
-            setFont(new Font("SF Pro Display", Font.PLAIN, 27));
+            setFont(new Font("SF Pro Display", Font.PLAIN, fontSize));
             setForeground(fg);
         }
 

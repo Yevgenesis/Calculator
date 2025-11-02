@@ -17,6 +17,7 @@ public class Calculator {
     public String input(String value) {
         if (lastWasResult) {
             clear();
+            lastWasResult = false;
         }
 
         if (".".equals(value)) {
@@ -106,6 +107,13 @@ public class Calculator {
      */
     public String getExpression() {
         return expression.toString();
+    }
+
+    /**
+     * Returns whether last operation was a result.
+     */
+    public boolean isLastWasResult() {
+        return lastWasResult;
     }
 
     /**
