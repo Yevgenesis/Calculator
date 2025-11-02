@@ -101,6 +101,101 @@ public class Calculator {
         lastWasResult = false;
     }
 
+    /**
+     * Returns current expression as string.
+     */
+    public String getExpression() {
+        return expression.toString();
+    }
+
+    /**
+     * Toggles the sign of the current number (or result).
+     * Works like iOS calculator: negates the last number in the expression.
+     */
+    public String negate() {
+        if (expression.isEmpty()) {
+            return "0";
+        }
+
+        // Find the start of the last number
+        int end = expression.length();
+        int start = end - 1;
+
+        // Move backwards to find the start of the number
+        while (start > 0) {
+            char c = expression.charAt(start - 1);
+            if (isOperator(c)) {
+                break;
+            }
+            start--;
+        }
+
+        // Extract the number
+        String numStr = expression.substring(start, end);
+
+        // Handle empty or invalid cases
+        if (numStr.isEmpty() || ".".equals(numStr)) {
+            return expression.toString();
+        }
+
+        try {
+            BigDecimal num = new BigDecimal(numStr);
+            BigDecimal negated = num.negate();
+            String negatedStr = negated.stripTrailingZeros().toPlainString();
+
+            // Replace the number in the expression
+            expression.replace(start, end, negatedStr);
+
+            return expression.toString();
+        } catch (NumberFormatException e) {
+            return expression.toString();
+        }
+    }
+
+    /**
+     * Converts the current number to percentage (divides by 100).
+     * Works like iOS calculator: converts last number to its percentage value.
+     */
+    public String percentage() {
+        if (expression.isEmpty()) {
+            return "0";
+        }
+
+        // Find the start of the last number
+        int end = expression.length();
+        int start = end - 1;
+
+        // Move backwards to find the start of the number
+        while (start > 0) {
+            char c = expression.charAt(start - 1);
+            if (isOperator(c)) {
+                break;
+            }
+            start--;
+        }
+
+        // Extract the number
+        String numStr = expression.substring(start, end);
+
+        // Handle empty or invalid cases
+        if (numStr.isEmpty() || ".".equals(numStr)) {
+            return expression.toString();
+        }
+
+        try {
+            BigDecimal num = new BigDecimal(numStr);
+            BigDecimal percent = num.divide(new BigDecimal("100"));
+            String percentStr = percent.stripTrailingZeros().toPlainString();
+
+            // Replace the number in the expression
+            expression.replace(start, end, percentStr);
+
+            return expression.toString();
+        } catch (NumberFormatException e) {
+            return expression.toString();
+        }
+    }
+
     private void addDecimalPoint() {
         if (expression.isEmpty() || isOperator(expression.charAt(expression.length() - 1))) {
             expression.append("0");

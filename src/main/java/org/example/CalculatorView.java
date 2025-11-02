@@ -19,14 +19,21 @@ public class CalculatorView {
     private final Calculator calculator;
     private final DisplayFormatter formatter = new DisplayFormatter();
     private final JTextField display;
+    private final JLabel expressionLabel;
 
     public CalculatorView(Calculator calculator) {
         this.calculator = calculator;
 
         JFrame frame = createFrame();
         this.display = createDisplay();
+        this.expressionLabel = createExpressionLabel();
 
-        frame.add(display, BorderLayout.NORTH);
+        JPanel displayPanel = new JPanel(new BorderLayout());
+        displayPanel.setBackground(DARK_BG);
+        displayPanel.add(expressionLabel, BorderLayout.NORTH);
+        displayPanel.add(display, BorderLayout.CENTER);
+
+        frame.add(displayPanel, BorderLayout.NORTH);
         frame.add(createButtons(), BorderLayout.CENTER);
         setupKeyboard(frame);
 
@@ -50,8 +57,17 @@ public class CalculatorView {
         f.setFont(new Font("SF Pro Display", Font.PLAIN, 48));
         f.setBackground(DARK_BG);
         f.setForeground(Color.WHITE);
-        f.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+//        f.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
         return f;
+    }
+
+    private JLabel createExpressionLabel() {
+        JLabel label = new JLabel(" ");
+        label.setHorizontalAlignment(JLabel.RIGHT);
+        label.setFont(new Font("SF Pro Display", Font.PLAIN, 16));
+        label.setForeground(new Color(150, 150, 150));
+        label.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 20));
+        return label;
     }
 
     private void updateDisplay(String text) {
@@ -84,6 +100,8 @@ public class CalculatorView {
         if (c == '=' || code == KeyEvent.VK_ENTER) return "=";
         if (c == 'c' || c == 'C' || code == KeyEvent.VK_ESCAPE) return "C";
         if (code == KeyEvent.VK_BACK_SPACE) return "⌫";
+        if (c == '%') return "%";
+        if (c == 'n' || c == 'N') return "±"; // 'n' for negate
 
         return null;
     }
@@ -91,11 +109,11 @@ public class CalculatorView {
     private JPanel createButtons() {
         JPanel p = new JPanel(new GridBagLayout());
         p.setBackground(DARK_BG);
-        p.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         GridBagConstraints g = new GridBagConstraints();
         g.fill = GridBagConstraints.BOTH;
-        g.insets = new Insets(3, 3, 3, 3);
+        g.insets = new Insets(5, 5, 5, 5);
         g.weightx = g.weighty = 1;
 
         // Row 1
@@ -141,6 +159,7 @@ public class CalculatorView {
 
     private void handleInput(String cmd) {
         String result;
+        String previousExpression = null;
 
         // Normalize operators
         if ("÷".equals(cmd)) cmd = "/";
@@ -150,16 +169,30 @@ public class CalculatorView {
         if ("C".equals(cmd)) {
             calculator.clear();
             result = "0";
+            expressionLabel.setText(" ");
         } else if ("⌫".equals(cmd)) {
             result = calculator.backspace();
-        } else if ("±".equals(cmd) || "%".equals(cmd)) {
-            return; // TODO
+        } else if ("±".equals(cmd)) {
+            result = calculator.negate();
+        } else if ("%".equals(cmd)) {
+            result = calculator.percentage();
         } else if (cmd.matches("[0-9.]")) {
             result = calculator.input(cmd);
         } else if (cmd.matches("[+\\-*/]")) {
             result = calculator.operator(cmd);
         } else if ("=".equals(cmd)) {
+            previousExpression = calculator.getExpression();
             result = calculator.calculate();
+
+            // Показываем выражение только если был реальный расчет
+            if (previousExpression != null && !previousExpression.isEmpty() &&
+                    !previousExpression.equals(result)) {
+                String displayExpr = previousExpression
+                        .replace("*", "×")
+                        .replace("/", "÷")
+                        .replace("-", "−");
+                expressionLabel.setText(displayExpr);
+            }
         } else {
             return;
         }
@@ -179,9 +212,8 @@ public class CalculatorView {
             setContentAreaFilled(false);
             setFocusPainted(false);
             setBorderPainted(false);
-            setFont(new Font("SF Pro Display", Font.PLAIN, 30));
+            setFont(new Font("SF Pro Display", Font.PLAIN, 27));
             setForeground(fg);
-//            setMargin(new Insets(6, 12, 6, 12));
         }
 
         @Override
