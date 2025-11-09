@@ -1,7 +1,21 @@
 package org.example;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.RenderingHints;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -11,6 +25,7 @@ import java.awt.event.KeyEvent;
 public class CalculatorView {
     private static final Color DARK_BG = new Color(44, 44, 46);
     private static final Color BTN_GRAY = new Color(58, 58, 60);
+
     private static final Color BTN_LIGHT = new Color(165, 165, 165);
     private static final Color BTN_ORANGE = new Color(255, 149, 0);
     private static final int WIDTH = 320;
@@ -160,7 +175,7 @@ public class CalculatorView {
 
     private void handleInput(String cmd) {
         String result;
-        String previousExpression = null;
+        String previousExpression;
 
         // Normalize operators
         if ("÷".equals(cmd)) cmd = "/";
